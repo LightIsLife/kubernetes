@@ -4,13 +4,16 @@ metadata:
   name: squeezebox
 spec:
   ports:
-    - port: 9000
+    - name: http
+      port: 9000
       protocol: TCP
       targetPort: 9000
-    - port: 9090
+    - name: http2
+      port: 9090
       protocol: TCP
       targetPort: 9090
-    - port: 3483
+    - name: udp
+      port: 3483
       protocol: UDP
       targetPort: 3483
   selector:
