@@ -17,13 +17,9 @@ spec:
       - image: lmscommunity/logitechmediaserver
         name: lms
         ports:
-        - port: 9000
-          protocoll: TCP
-          targetPort: 9000
-        - port: 9090
-          protocoll: TCP
-          targetPort: 9090
-        - port: 3483
-          protocoll: UDP
-          targetPort: 3483
+        - containerPort: 9000
+        - containerPort: 9090
+        - containerPort: 3483
+          protocol: UDP
+          
         

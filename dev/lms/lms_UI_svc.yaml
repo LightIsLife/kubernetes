@@ -4,7 +4,14 @@ metadata:
   name: lms
 spec:
   ports:
-  - port: 9000
-    targetPort: 9000
+    - port: 9000
+      protocoll: TCP
+      targetPort: 9000
+    - port: 9090
+      protocoll: TCP
+      targetPort: 9090
+    - port: 3483
+      protocoll: UDP
+      targetPort: 3483
   selector:
     app: lms
