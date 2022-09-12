@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: lms
+  template:
+    metadata:
+      labels:
+        app: lms
+    spec:
+      containers:
+      - image: lmscommunity/logitechmediaserver
+        name: lms
+        ports:
+        - containerPort: 9000
+        - containerPort: 9090
+        - containerPort: 3483/udp
