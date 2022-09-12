@@ -5,13 +5,13 @@ metadata:
 spec:
   ports:
     - port: 9000
-      protocoll: TCP
+      protocol: TCP
       targetPort: 9000
     - port: 9090
-      protocoll: TCP
+      protocol: TCP
       targetPort: 9090
     - port: 3483
-      protocoll: UDP
+      protocol: UDP
       targetPort: 3483
   selector:
     app: lms
