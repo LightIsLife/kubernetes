@@ -35,7 +35,12 @@ metadata:
   #externalTrafficPolicy: Local
   labels:
     app: lms
-spec:
+  spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   type: LoadBalancer
   selector:
     app: lms
@@ -69,6 +74,11 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   rules:
   - host: squeezebox.local
     http:
