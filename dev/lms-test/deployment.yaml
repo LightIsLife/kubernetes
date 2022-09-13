@@ -18,7 +18,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: lms-config
-  namespace: music
+  namespace: lms
 spec:
   accessModes:
     - ReadWriteOnce
@@ -31,7 +31,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: lms-service
-  namespace: music
+  namespace: lms
   #externalTrafficPolicy: Local
   labels:
     app: lms
@@ -57,7 +57,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: lms-ingress
-  namespace: music
+  namespace: lms
   labels:
     app: lms
   annotations:
@@ -79,7 +79,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lms
-  namespace: music
+  namespace: lms
   labels:
     app: lms
 #    version: arm64v8-8.0.0_31-03-2020
@@ -134,7 +134,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
-          value: "Europe/Amsterdam"
+          value: "Europe/Rome"
         ports:
         - name: "discover-tcp"
           containerPort: 3483
