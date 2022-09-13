@@ -48,8 +48,8 @@ spec:
     protocol: TCP
     port: 9090
   - name: "castbridge"
-    protocol: TCP
-    port: 49152
+    protocol: UDP
+    port: 3483
 #  configIP: None
   loadBalancerIP: 192.168.1.173 
 ---
@@ -148,9 +148,9 @@ spec:
         - name: "admin"
           containerPort: 9090
           protocol: TCP
-        - name: "castbridge"
-          containerPort: 49152
-          protocol: TCP
+#        - name: "castbridge"
+#          containerPort: 49152
+#          protocol: TCP
         volumeMounts:
         - name: lms-config
           mountPath: "/config"
