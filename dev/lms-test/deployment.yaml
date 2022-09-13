@@ -26,32 +26,7 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: ""            
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lms-service
-  namespace: music
-  #externalTrafficPolicy: Local
-  labels:
-    app: lms
-spec:
-  type: LoadBalancer
-  selector:
-    app: lms
-  ports:
-  - name: "web"
-    protocol: TCP
-    port: 9000
-    targetPort: 9000
-  - name: "admin"
-    protocol: TCP
-    port: 9090
-  - name: "castbridge"
-    protocol: TCP
-    port: 49152
-#  configIP: None
-  loadBalancerIP: 192.168.1.173   
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -121,20 +96,20 @@ spec:
         - name: tz-config
           mountPath: /etc/localtime
           readOnly: true
-#        readinessProbe:
-##          httpGet:
-#            path: /
-#            port: 9000
-#          initialDelaySeconds: 60
-#          failureThreshold: 10
-#          timeoutSeconds: 60
-#        livenessProbe:
-#          httpGet:
-#            path: /
-#            port: 9000
-#          initialDelaySeconds: 60
-#          failureThreshold: 10
-#          timeoutSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 60
+          failureThreshold: 10
+          timeoutSeconds: 60
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 60
+          failureThreshold: 10
+          timeoutSeconds: 60
         resources:
           requests:
             cpu: "1.0"
