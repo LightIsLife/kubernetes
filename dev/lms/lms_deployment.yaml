@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lms
+  name: lms-server
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - image: lmscommunity/logitechmediaserver
-        name: lms
+        name: lms-server
         ports:
         - containerPort: 9000
         - containerPort: 9090
