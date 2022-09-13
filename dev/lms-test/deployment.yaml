@@ -119,30 +119,6 @@ spec:
         app: lms
     spec:         
       restartPolicy: Always
-      #imagePullSecrets:
-        #- name: "gitlab"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - "arm64"   
-              - key: kubernetes.io/hostname
-                operator: NotIn
-                values:
-                - "omv"   
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - "lms"
-              topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       containers:
       - name: lms
