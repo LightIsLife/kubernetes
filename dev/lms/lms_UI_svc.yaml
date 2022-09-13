@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lms
+  name: lms-service
   namespace: lms
   #externalTrafficPolicy: Local
   labels:
@@ -23,4 +23,25 @@ spec:
     port: 49152
 #  configIP: None
   loadBalancerIP: 192.168.1.173
-
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lms-ingress
+  namespace: lms
+  labels:
+    app: lms
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: lms.local.k3s
+    http:
+      paths: 
+      - pathType: Prefix 
+        path: "/"  
+        backend:
+          service:
+            name: lms-service
+            port:
+              number: 9000
