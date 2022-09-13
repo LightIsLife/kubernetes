@@ -143,20 +143,20 @@ spec:
         - name: tz-config
           mountPath: /etc/localtime
           readOnly: true
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 9000
-          initialDelaySeconds: 60
-          failureThreshold: 10
-          timeoutSeconds: 60
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9000
-          initialDelaySeconds: 60
-          failureThreshold: 10
-          timeoutSeconds: 60
+#        readinessProbe:
+##          httpGet:
+#            path: /
+#            port: 9000
+#          initialDelaySeconds: 60
+#          failureThreshold: 10
+#          timeoutSeconds: 60
+#        livenessProbe:
+#          httpGet:
+#            path: /
+#            port: 9000
+#          initialDelaySeconds: 60
+#          failureThreshold: 10
+#          timeoutSeconds: 60
         resources:
           requests:
             cpu: "1.0"
