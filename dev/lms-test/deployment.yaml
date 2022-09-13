@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: lms-config
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  mountOptions:
+    - nfsvers=3
+    - nolock
+  nfs:
+    server: 192.168.1.38
+    path: "/volume1/home/Markus/lms_config"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lms-config
+  namespace: music
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lms-service
+  namespace: music
+  #externalTrafficPolicy: Local
+  labels:
+    app: lms
+spec:
+  type: LoadBalancer
+  selector:
+    app: lms
+  ports:
+  - name: "web"
+    protocol: TCP
+    port: 9000
+    targetPort: 9000
+  - name: "admin"
+    protocol: TCP
+    port: 9090
+  - name: "castbridge"
+    protocol: TCP
+    port: 49152
+#  configIP: None
+  loadBalancerIP: 192.168.1.173 
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lms-ingress
+  namespace: music
+  labels:
+    app: lms
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: lms.local.k3s
+    http:
+      paths: 
+      - pathType: Prefix 
+        path: "/"  
+        backend:
+          service:
+            name: lms-service
+            port:
+              number: 9000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms
+  namespace: music
+  labels:
+    app: lms
+#    version: arm64v8-8.0.0_31-03-2020
+    version: latest
+    type: third-party
+    facing: external
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: lms
+  template:
+    metadata:
+      labels:
+        app: lms
+    spec:         
+      restartPolicy: Always
+      #imagePullSecrets:
+        #- name: "gitlab"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - "arm64"   
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - "omv"   
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - "lms"
+              topologyKey: "kubernetes.io/hostname"
+      hostNetwork: true
+      containers:
+      - name: lms
+        image: lmscommunity/logitechmediaserver:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "Europe/Amsterdam"
+        ports:
+        - name: "discover-tcp"
+          containerPort: 3483
+          protocol: TCP
+        - name: "discover-udp"
+          containerPort: 3483
+          protocol: UDP
+        - name: "web"
+          containerPort: 9000
+          protocol: TCP
+        - name: "admin"
+          containerPort: 9090
+          protocol: TCP
+        - name: "castbridge"
+          containerPort: 49152
+          protocol: TCP
+        volumeMounts:
+        - name: lms-config
+          mountPath: "/config"
+          subPath: "state"
+        - name: lms-config
+          mountPath: "/playlist"
+          subPath: "playlists"
+        - name: music
+          mountPath: "/music"
+          readOnly: true
+        - name: downloads
+          mountPath: "/downloads"
+        - name: tz-config
+          mountPath: /etc/localtime
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 60
+          failureThreshold: 10
+          timeoutSeconds: 60
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 60
+          failureThreshold: 10
+          timeoutSeconds: 60
+        resources:
+          requests:
+            cpu: "1.0"
+            memory: "1500Mi"
+          limits:
+            cpu: "3.0"
+            memory: "2500Mi"
+      volumes:
+      - name: lms-config
+        persistentVolumeClaim:
+          claimName: lms-config
+      - name: downloads
+        nfs:
+          server: 192.168.1.38
+          path: /volume1/Music
+      - name: music
+        nfs:
+          server: 192.168.1.38
+          path: /volume1/Music
+      - name: tz-config
+        hostPath:
+          path: /etc/localtime
+---
