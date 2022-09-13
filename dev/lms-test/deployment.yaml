@@ -47,15 +47,15 @@ spec:
   - name: "admin"
     protocol: TCP
     port: 9090
-  - name: "castbridge"
+  - name: "discovery-tcp"
     protocol: UDP
     port: 3483
-  - name: "castbridge2"
+  - name: "discovery-udp"
     protocol: TCP
     port: 3483
-  - name: "castbridge"
-    Port: 49152
+  - name: "castbridge3"
     protocol: TCP
+    Port: 49152
 #  configIP: None
   loadBalancerIP: 192.168.1.173 
 ---
