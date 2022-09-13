@@ -58,7 +58,28 @@ spec:
 #    port: 49152
 #  configIP: None
   loadBalancerIP: 192.168.1.173 
-
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lms-ingress
+  namespace: lms
+  labels:
+    app: lms
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: squeezebox.local
+    http:
+      paths: 
+      - pathType: Prefix 
+        path: "/"  
+        backend:
+          service:
+            name: lms-service
+            port:
+              number: 9000
 ---
 apiVersion: apps/v1
 kind: Deployment
