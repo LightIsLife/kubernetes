@@ -42,7 +42,7 @@ spec:
   ports:
   - name: "web"
     protocol: TCP
-    port: 9000
+    port: 9001
     targetPort: 9000
   - name: "admin"
     protocol: TCP
